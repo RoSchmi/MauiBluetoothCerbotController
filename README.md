@@ -1,6 +1,6 @@
 # MauiBluetoothCerbotController
 
-This is work in progress (not ready)
+This is work in progress (not ready) 
 
 This App serves to control the GHI FEZ-Cerbot from a Maui App.
 The App (when comleted) will control the motors and play some tunes (already working)
