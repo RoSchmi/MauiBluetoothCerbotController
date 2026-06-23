@@ -68,22 +68,6 @@ namespace RoSchmi.BluetoothController.Services
             {
                 return BleConnectionStatus.Failed;
             }
-
-
-
-
-            /*
-            ulong address = ulong.Parse(deviceId);
-
-            var device = await BluetoothLEDevice.FromBluetoothAddressAsync(address);
-
-            if (device == null)
-                return BleConnectionStatus.Unreachable;
-
-            var result = await device.GetGattServicesAsync();
-
-            return MapStatus(result.Status);
-            */
         }
 
         private bool IsWindowsDeviceId(string id)
@@ -101,36 +85,6 @@ namespace RoSchmi.BluetoothController.Services
 
             return false;
         }
-
-
-        /*
-        public async Task<BleConnectionStatus> ConnectAsync(string deviceId)
-        {
-            
-            // 1. Open device using its DeviceId
-       
-            _device = await BluetoothLEDevice.FromIdAsync(deviceId);
-
-            if (_device == null)
-                throw new Exception("Bluetooth-Device could not be opened.");
-
-            // 2. GATT-Services available ?
-            var result = await _device.GetGattServicesAsync();
-
-            if (result.Status != GattCommunicationStatus.Success)
-                throw new Exception($"GATT-Services konnten nicht gelesen werden: {result.Status}");
-
-            // Optional: Printout Services (Debug)
-            foreach (var service in result.Services)
-            {
-                System.Diagnostics.Debug.WriteLine($"Service: {service.Uuid}");
-            }
-
-            BleConnectionStatus returnStatus = 
-            return new BleConnectionStatus(BleConnectionStatus = result.Status);
-            
-        }
-        */
 
         public async Task WriteAsync(string deviceId, byte[] data)    
         {
@@ -190,8 +144,6 @@ namespace RoSchmi.BluetoothController.Services
             throw new FormatException($"Ungültige DeviceId: {deviceId}");
         }
 
-
-
         private BleConnectionStatus MapStatus(GattCommunicationStatus status)
         {
             return status switch
@@ -210,18 +162,3 @@ namespace RoSchmi.BluetoothController.Services
 #endif
 
 
-
-
-/*
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MauiBluetoothCerbotController.Services
-{
-    internal class WindowsBluetoothBleService
-    {
-    }
-}
-*/
