@@ -28,6 +28,15 @@ namespace MauiBluetoothCerbotController
             BindingContext = vm;
         }
 
+        protected override async void OnAppearing()
+        {
+            base.OnAppearing();
+            await (BindingContext as MainPageViewModel).InitializeAsync();
+        }
+
+
+
+
         private void OnCounterClicked(object? sender, EventArgs e)
         {
             count++;
@@ -42,37 +51,3 @@ namespace MauiBluetoothCerbotController
     }
 }
 
-
-
-
-
-
-
-/*
-
-
-namespace MauiBluetoothCerbotController
-{
-    public partial class MainPage : ContentPage
-    {
-        int count = 0;
-
-        public MainPage()
-        {
-            InitializeComponent();
-        }
-
-        private void OnCounterClicked(object? sender, EventArgs e)
-        {
-            count++;
-
-            if (count == 1)
-                CounterBtn.Text = $"Clicked {count} time";
-            else
-                CounterBtn.Text = $"Clicked {count} times";
-
-            SemanticScreenReader.Announce(CounterBtn.Text);
-        }
-    }
-}
-*/

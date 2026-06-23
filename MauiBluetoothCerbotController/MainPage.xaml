@@ -6,10 +6,30 @@
              xmlns:viewmodels="clr-namespace:MauiBluetoothCerbotController.ViewModels"
              x:DataType="viewmodels:MainPageViewModel">
 
+    
+
+
     <ScrollView>
         <VerticalStackLayout
             Padding="30,0"
             Spacing="25">
+            <HorizontalStackLayout Margin="0,20,0,0"  Spacing="10" VerticalOptions="Start">
+                <Label Text="Connect to BLE-Device"
+           VerticalOptions="Center" FontAttributes="Bold"/>
+
+                <Picker  BackgroundColor="BlanchedAlmond"
+                         MinimumWidthRequest="200"
+            ItemsSource="{Binding Devices}"
+            ItemDisplayBinding="{Binding Name}"
+            SelectedItem="{Binding SelectedDevice}" />
+
+                <BoxView WidthRequest="20"
+             HeightRequest="20"
+             CornerRadius="4"
+             VerticalOptions="Center"
+             Color="{Binding IsConnected, Converter={StaticResource BoolToColorConverter}}" />
+            </HorizontalStackLayout>
+
             <Image
                 Source="ghi_cerbot_2.png"
                 HeightRequest="185"

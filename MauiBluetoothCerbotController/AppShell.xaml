@@ -7,7 +7,7 @@
     Title="MauiBluetoothCerbotController">
 
     <ShellContent
-        Title="Home"
+        Title=""
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
 

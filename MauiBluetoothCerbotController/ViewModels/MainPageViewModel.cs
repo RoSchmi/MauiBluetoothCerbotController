@@ -28,7 +28,18 @@ namespace MauiBluetoothCerbotController.ViewModels
     {
         private IBluetoothBleService _bluetooth;
 
-        private ObservableCollection<BleDeviceInfo> _deviceInfoCollection = new ObservableCollection<BleDeviceInfo>();
+        //private ObservableCollection<BleDeviceInfo> _deviceInfoCollection = new ObservableCollection<BleDeviceInfo>();
+
+        [ObservableProperty]
+        private ObservableCollection<BleDeviceInfo> devices;
+
+        [ObservableProperty]
+        private BleDeviceInfo selectedDevice;
+
+        [ObservableProperty]
+        private bool isConnected;
+
+
 
 #if WINDOWS
 
@@ -49,10 +60,12 @@ namespace MauiBluetoothCerbotController.ViewModels
         {
             _bluetooth = bluetooth;
 
-            _bluetooth.ScanAsync();
-            _deviceInfoCollection = _bluetooth.Devices;
+            Devices = new ObservableCollection<BleDeviceInfo>();
 
-            _bluetooth.ConnectAsync(_deviceInfoCollection[0].Id);
+            // _bluetooth.ScanAsync();
+            // _deviceInfoCollection = _bluetooth.Devices;
+
+            // _bluetooth.ConnectAsync(_deviceInfoCollection[0].Id);
 
 
 
@@ -70,11 +83,45 @@ namespace MauiBluetoothCerbotController.ViewModels
         [RelayCommand]
         private async Task Play_No_4() { SendData("T:4:1"); }
 
+        public async Task InitializeAsync()
+        {
+            await _bluetooth.ScanAsync();
+            // _deviceInfoCollection = _bluetooth.Devices;
+            Devices = _bluetooth.Devices;
+
+            /*
+            if (Devices.Any())
+                await _bluetooth.ConnectAsync(Devices[0].Id);
+            */
+        }
+
+        partial void OnSelectedDeviceChanged(BleDeviceInfo value)
+        {
+            if (value != null)
+                ConnectCommand.Execute(value);
+        }
+
+        /*
+        [RelayCommand]
+        public async Task ConnectAsync(BleDeviceInfo device)
+        {
+            var status = await _bluetooth.ConnectAsync(device.Id);
+            IsConnected = status == GattCommunicationStatus.Success;
+        }
+        */
+
+        [RelayCommand]
+        public async Task ConnectAsync(BleDeviceInfo device)
+        {
+            var status = await _bluetooth.ConnectAsync(device.Id);
+            IsConnected = status == BleConnectionStatus.Success;
+        }
+
 
 
         private async void SendData(string val)
         {
-            await _bluetooth.WriteAsync(_deviceInfoCollection[0].Id, Encoding.UTF8.GetBytes(val + "\r\n"));
+            await _bluetooth.WriteAsync(Devices[0].Id, Encoding.UTF8.GetBytes(val + "\r\n"));
         }
 
     }

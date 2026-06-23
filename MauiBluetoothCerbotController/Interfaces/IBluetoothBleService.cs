@@ -1,5 +1,6 @@
-﻿using System.Collections.ObjectModel;
-using RoSchmi.BluetoothController.Models;
+﻿using RoSchmi.BluetoothController.Models;
+using System.Collections.ObjectModel;
+
 
 namespace RoSchmi.BluetoothController.Interfaces
 {
@@ -8,26 +9,13 @@ namespace RoSchmi.BluetoothController.Interfaces
         ObservableCollection<BleDeviceInfo> Devices { get; }
 
         Task ScanAsync();
-        Task ConnectAsync(string deviceId);
+       // Task ConnectAsync(string deviceId);
 
+        //Task<GattCommunicationStatus> ConnectAsync(string deviceId);
+        Task<BleConnectionStatus> ConnectAsync(string deviceId);
+        
 
         Task WriteAsync(string deviceId, byte[] data);
 
     }
 }
-
-
-
-
-/*
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MauiBluetoothCerbotController.Interfaces
-{
-    internal class IBluetoothBleService
-    {
-    }
-}
-*/
