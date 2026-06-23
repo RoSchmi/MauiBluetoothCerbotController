@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MauiBluetoothCerbotController.MainPage"
+             xmlns:pagemodel="clr-namespace:MauiBluetoothCerbotController"
+             xmlns:viewmodels="clr-namespace:MauiBluetoothCerbotController.ViewModels"
+             x:DataType="viewmodels:MainPageViewModel">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+            <Image
+                Source="ghi_cerbot_2.png"
+                HeightRequest="185"
+                Aspect="AspectFit"
+                SemanticProperties.Description="GHI Electronics Cerbot" />
+
+            <Label
+                Text="Hello, GHI FEZ Cerbot"
+                Style="{StaticResource Headline}"
+                SemanticProperties.HeadingLevel="Level1" />
+
+            <Label
+                Text="Welcome back &#10;.NET Maui App steering FEZ Cerbot"
+                Style="{StaticResource SubHeadline}"
+                SemanticProperties.HeadingLevel="Level2"
+                SemanticProperties.Description="Welcome to dot net Multi platform App U I" />
+            <HorizontalStackLayout Spacing="5">
+                <Button Text="Play Tune No 1"  Command="{Binding Play_No_1Command}"/>
+                <Button Text="Play Tune No 2"  Command="{Binding Play_No_2Command}"/>
+                <Button Text="Play Tune No 3"  Command="{Binding Play_No_4Command}"/>
+            </HorizontalStackLayout>
+            <Button
+                x:Name="CounterBtn"
+                Text="Click me" 
+                SemanticProperties.Hint="Counts the number of times you click"
+                Clicked="OnCounterClicked"
+                HorizontalOptions="Fill" />
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
