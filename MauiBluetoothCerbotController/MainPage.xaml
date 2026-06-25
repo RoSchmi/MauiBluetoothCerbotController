@@ -51,6 +51,38 @@
                 <Button Text="Play Tune No 2"  Command="{Binding Play_No_2Command}"/>
                 <Button Text="Play Tune No 3"  Command="{Binding Play_No_4Command}"/>
             </HorizontalStackLayout>
+            <Grid RowDefinitions="Auto,Auto,Auto"
+      ColumnDefinitions="*,Auto,*"
+      ColumnSpacing="10"
+      RowSpacing="10"
+      HorizontalOptions="Center"
+      VerticalOptions="Center">
+
+                <!-- Zeile 1: Vorwärts -->
+                <Button Grid.Row="0" Grid.Column="1"
+            WidthRequest="100"
+            Text="Vorwärts"
+            Command="{Binding MoveForwardCommand}" />
+
+                <!-- Zeile 2: Links / Stop / Rechts -->
+                <Button Grid.Row="1" Grid.Column="0"
+            Text="Links"
+            Command="{Binding TurnLeftCommand}" />
+
+                <Button Grid.Row="1" Grid.Column="1"
+            Text="Stop"
+            Command="{Binding StopCommand}" />
+
+                <Button Grid.Row="1" Grid.Column="2"
+            Text="Rechts"
+            Command="{Binding TurnRightCommand}" />
+
+                <!-- Zeile 3: Rückwärts -->
+                <Button Grid.Row="2" Grid.Column="1"
+            WidthRequest="100"
+            Text="Rückwärts"
+            Command="{Binding MoveBackwardCommand}" />
+            </Grid>
             <Button
                 x:Name="CounterBtn"
                 Text="Click me" 

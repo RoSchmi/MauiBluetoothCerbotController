@@ -26,6 +26,9 @@ namespace MauiBluetoothCerbotController.ViewModels
 
     public partial class MainPageViewModel : ObservableObject
     {
+        public ObservableCollection<string> LogLines { get; }
+    = new ObservableCollection<string>();
+
         private IBluetoothBleService _bluetooth;
 
         //private ObservableCollection<BleDeviceInfo> _deviceInfoCollection = new ObservableCollection<BleDeviceInfo>();
@@ -74,6 +77,15 @@ namespace MauiBluetoothCerbotController.ViewModels
 
         #endregion
 
+
+        public void AddLog(string line)
+        {
+            if (LogLines.Count >= 100)
+                LogLines.RemoveAt(0); // älteste Zeile löschen
+
+            LogLines.Add(line);
+        }
+
         [RelayCommand]
         private async Task Play_No_1() { SendData("T:1:1"); }
 
@@ -82,6 +94,51 @@ namespace MauiBluetoothCerbotController.ViewModels
 
         [RelayCommand]
         private async Task Play_No_4() { SendData("T:4:1"); }
+
+        [RelayCommand]
+        private async Task MoveForward()
+        {
+            if (speedLeft < 0) speedLeft = 0;
+            if (speedRight < 0) speedRight = 0;
+            speedLeft += 30;
+            speedRight += 30;
+            SendData("F:" + speedLeft + ":" + speedRight);
+        }
+
+        [RelayCommand]
+        private async Task TurnLeft()
+        {
+            speedLeft += 20;
+            speedRight -= 20;
+            SendData("F:" + speedLeft + ":" + speedRight);
+        }
+
+        [RelayCommand]
+        private async Task Stop()
+        {
+            speedLeft = 0;
+            speedRight = 0;
+            SendData("F:" + speedLeft + ":" + speedRight);
+
+        }
+
+        [RelayCommand]
+        private async Task TurnRight()
+        {
+            speedLeft -= 20;
+            speedRight += 20;
+            SendData("F:" + speedLeft + ":" + speedRight);
+        }
+
+        [RelayCommand]
+        private async Task MoveBackward()
+        {
+            if (speedLeft > 0) speedLeft = 0;
+            if (speedRight > 0) speedRight = 0;
+            speedLeft -= 30;
+            speedRight -= 30;
+            SendData("F:" + speedLeft + ":" + speedRight);
+        }
 
         public async Task InitializeAsync()
         {
