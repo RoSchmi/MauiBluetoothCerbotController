@@ -26,8 +26,10 @@ namespace MauiBluetoothCerbotController.ViewModels
 
     public partial class MainPageViewModel : ObservableObject
     {
-        public ObservableCollection<string> LogLines { get; }
-    = new ObservableCollection<string>();
+        [ObservableProperty]
+        private ObservableCollection<string> logLines = new();
+
+   // = new ObservableCollection<string>() { "Start of logging" };
 
         private IBluetoothBleService _bluetooth;
 
@@ -87,7 +89,7 @@ namespace MauiBluetoothCerbotController.ViewModels
         }
 
         [RelayCommand]
-        private async Task Play_No_1() { SendData("T:1:1"); }
+        private async Task Play_No_1() { SendData("T:1:1"); AddLog("Tune_No 1"); }
 
         [RelayCommand]
         private async Task Play_No_2() { SendData("T:2:1"); }

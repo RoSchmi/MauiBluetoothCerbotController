@@ -51,38 +51,67 @@
                 <Button Text="Play Tune No 2"  Command="{Binding Play_No_2Command}"/>
                 <Button Text="Play Tune No 3"  Command="{Binding Play_No_4Command}"/>
             </HorizontalStackLayout>
-            <Grid RowDefinitions="Auto,Auto,Auto"
-      ColumnDefinitions="*,Auto,*"
-      ColumnSpacing="10"
-      RowSpacing="10"
-      HorizontalOptions="Center"
-      VerticalOptions="Center">
 
-                <!-- Zeile 1: Vorwärts -->
-                <Button Grid.Row="0" Grid.Column="1"
-            WidthRequest="100"
-            Text="Vorwärts"
-            Command="{Binding MoveForwardCommand}" />
+            <Grid ColumnDefinitions="200,*"
+                RowDefinitions="Auto"
+                ColumnSpacing="20"
+                Margin="0,10,0,0">
+                <!-- ⭐ LINKES LOG-FENSTER -->
+                <CollectionView
+                        Grid.Column="0"
+                        ItemsSource="{Binding LogLines}"
+                        BackgroundColor="#C8DCD0"
+                        VerticalScrollBarVisibility="Always"
+                        HeightRequest="120"
+                        Margin="0,0,0,0">
 
-                <!-- Zeile 2: Links / Stop / Rechts -->
-                <Button Grid.Row="1" Grid.Column="0"
-            Text="Links"
-            Command="{Binding TurnLeftCommand}" />
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Label Text="{Binding}"
+                                    FontFamily="Consolas"
+                                    FontSize="12"
+                                    TextColor="Black"
+                                    Padding="2,0"/>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
 
-                <Button Grid.Row="1" Grid.Column="1"
-            Text="Stop"
-            Command="{Binding StopCommand}" />
+                <!-- ⭐ RECHTS: DEIN STEUER-GRID (unverändert, aber zentriert) -->
+                <Grid Grid.Column="1"
+          RowDefinitions="Auto,Auto,Auto"
+          ColumnDefinitions="*,Auto,*, 200"
+          ColumnSpacing="10"
+          RowSpacing="10"
+          HorizontalOptions="Center"
+          VerticalOptions="Center">
 
-                <Button Grid.Row="1" Grid.Column="2"
-            Text="Rechts"
-            Command="{Binding TurnRightCommand}" />
+                    <!-- Zeile 1: Vorwärts -->
+                    <Button Grid.Row="0" Grid.Column="1"
+                WidthRequest="100"
+                Text="Vorwärts"
+                Command="{Binding MoveForwardCommand}" />
 
-                <!-- Zeile 3: Rückwärts -->
-                <Button Grid.Row="2" Grid.Column="1"
-            WidthRequest="100"
-            Text="Rückwärts"
-            Command="{Binding MoveBackwardCommand}" />
+                    <!-- Zeile 2: Links / Stop / Rechts -->
+                    <Button Grid.Row="1" Grid.Column="0"
+                Text="Links"
+                Command="{Binding TurnLeftCommand}" />
+
+                    <Button Grid.Row="1" Grid.Column="1"
+                Text="Stop"
+                Command="{Binding StopCommand}" />
+
+                    <Button Grid.Row="1" Grid.Column="2"
+                Text="Rechts"
+                Command="{Binding TurnRightCommand}" />
+
+                    <!-- Zeile 3: Rückwärts -->
+                    <Button Grid.Row="2" Grid.Column="1"
+                WidthRequest="100"
+                Text="Rückwärts"
+                Command="{Binding MoveBackwardCommand}" />
+                </Grid>
             </Grid>
+            
             <Button
                 x:Name="CounterBtn"
                 Text="Click me" 
