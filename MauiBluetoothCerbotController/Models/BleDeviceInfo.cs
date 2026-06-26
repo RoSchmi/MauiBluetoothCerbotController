@@ -11,20 +11,3 @@ namespace RoSchmi.BluetoothController.Models
 
     }
 }
-
-
-
-
-/*
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MauiBluetoothCerbotController.Models
-{
-    internal class BleDeviceInfo
-    {
-    }
-}
-*/

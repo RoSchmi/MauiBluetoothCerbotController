@@ -28,9 +28,7 @@ namespace MauiBluetoothCerbotController.ViewModels
     public partial class MainPageViewModel : ObservableObject
     {
         [ObservableProperty]
-        private ObservableCollection<string> logLines = new();
-
-   // = new ObservableCollection<string>() { "Start of logging" };
+        private ObservableCollection<LogEntry> logLines = new();
 
         private IBluetoothBleService _bluetooth;
 
@@ -60,7 +58,7 @@ namespace MauiBluetoothCerbotController.ViewModels
         private int speedRight = 0;
 
 
-        #region Region Constructor
+        #region Region Constructor 
 
         public MainPageViewModel(IBluetoothBleService bluetooth)
         {
@@ -68,6 +66,7 @@ namespace MauiBluetoothCerbotController.ViewModels
 
             Devices = new ObservableCollection<BleDeviceInfo>();
 
+            
             // _bluetooth.ScanAsync();
             // _deviceInfoCollection = _bluetooth.Devices;
 
@@ -85,8 +84,8 @@ namespace MauiBluetoothCerbotController.ViewModels
         {
             if (LogLines.Count >= 100)
                 LogLines.RemoveAt(0); // älteste Zeile löschen
-
-            LogLines.Add(line);
+            LogLines.Add(new LogEntry() { Message = line });
+           
         }
 
         [RelayCommand]
@@ -102,16 +101,16 @@ namespace MauiBluetoothCerbotController.ViewModels
         public string Text_No_1 { get; } = "Play short tone" ;
 
         [RelayCommand]
-        private async Task Play_No_2() { SendData("T:2:1"); }
+        private async Task Play_No_2() { SendData("T:2:1"); AddLog("Played Tune No. 1"); }
         public string Text_No_2 { get; } = "Play Tune No. 1";
 
         [RelayCommand]
-        private async Task Play_No_3() { SendData("T:3:1"); }
+        private async Task Play_No_3() { SendData("T:3:1"); AddLog("Played Tune No. 2"); }
         public string Text_No_3 { get; } = "Play Tune No. 2";
 
 
         [RelayCommand]
-        private async Task Play_No_4() { SendData("T:4:1"); }
+        private async Task Play_No_4() { SendData("T:4:1"); AddLog("Played Tune No. 3"); }
         public string Text_No_4 { get; } = "Play Tune No. 3";
 
         /*
@@ -128,6 +127,7 @@ namespace MauiBluetoothCerbotController.ViewModels
             speedLeft += 30;
             speedRight += 30;
             SendData("F:" + speedLeft + ":" + speedRight);
+            AddLog("Increase forward speed");
         }
 
         [RelayCommand]
@@ -136,6 +136,7 @@ namespace MauiBluetoothCerbotController.ViewModels
             speedLeft += 20;
             speedRight -= 20;
             SendData("F:" + speedLeft + ":" + speedRight);
+            AddLog("Turn left");
         }
 
         [RelayCommand]
@@ -144,6 +145,7 @@ namespace MauiBluetoothCerbotController.ViewModels
             speedLeft = 0;
             speedRight = 0;
             SendData("F:" + speedLeft + ":" + speedRight);
+            AddLog("Stop");
 
         }
 
@@ -153,6 +155,7 @@ namespace MauiBluetoothCerbotController.ViewModels
             speedLeft -= 20;
             speedRight += 20;
             SendData("F:" + speedLeft + ":" + speedRight);
+            AddLog("Turn right");
         }
 
         [RelayCommand]
@@ -163,18 +166,14 @@ namespace MauiBluetoothCerbotController.ViewModels
             speedLeft -= 30;
             speedRight -= 30;
             SendData("F:" + speedLeft + ":" + speedRight);
+            AddLog("Increase backward speed");
         }
 
         public async Task InitializeAsync()
         {
             await _bluetooth.ScanAsync();
-            // _deviceInfoCollection = _bluetooth.Devices;
-            Devices = _bluetooth.Devices;
-
-            /*
-            if (Devices.Any())
-                await _bluetooth.ConnectAsync(Devices[0].Id);
-            */
+            
+            Devices = _bluetooth.Devices;        
         }
 
         partial void OnSelectedDeviceChanged(BleDeviceInfo value)
@@ -197,6 +196,15 @@ namespace MauiBluetoothCerbotController.ViewModels
         {
             var status = await _bluetooth.ConnectAsync(device.Id);
             IsConnected = status == BleConnectionStatus.Success;
+            if (IsConnected)
+            {
+                AddLog("Successfully connected");
+            }
+            else
+            {
+                AddLog("Failed to connected");
+            }
+            
         }
 
 

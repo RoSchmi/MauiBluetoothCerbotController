@@ -6,59 +6,61 @@
              xmlns:viewmodels="clr-namespace:MauiBluetoothCerbotController.ViewModels"
              x:DataType="viewmodels:MainPageViewModel">
 
-    
 
-
-    <ScrollView>
-        <VerticalStackLayout
+    <Grid RowDefinitions="Auto,*">
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout
             Padding="30,0"
             Spacing="25">
-            <HorizontalStackLayout Margin="0,20,0,0"  Spacing="10" VerticalOptions="Start">
-                <Label Text="Connect to BLE-Device"
+                <HorizontalStackLayout Margin="0,20,0,0"  Spacing="10" VerticalOptions="Start">
+                    <Label Text="Connect to BLE-Device"
            VerticalOptions="Center" FontAttributes="Bold"/>
 
-                <Picker  BackgroundColor="BlanchedAlmond"
+                    <Picker  BackgroundColor="BlanchedAlmond"
                          MinimumWidthRequest="200"
             ItemsSource="{Binding Devices}"
             ItemDisplayBinding="{Binding Name}"
             SelectedItem="{Binding SelectedDevice}" />
 
-                <BoxView WidthRequest="20"
+                    <BoxView WidthRequest="20"
              HeightRequest="20"
              CornerRadius="4"
              VerticalOptions="Center"
              Color="{Binding IsConnected, Converter={StaticResource BoolToColorConverter}}" />
-            </HorizontalStackLayout>
+                </HorizontalStackLayout>
 
-            <Image
+                <Image
                 Source="ghi_cerbot_2.png"
                 HeightRequest="185"
                 Aspect="AspectFit"
                 SemanticProperties.Description="GHI Electronics Cerbot" />
 
-            <Label
+                <Label
                 Text="Hello, GHI FEZ Cerbot"
                 Style="{StaticResource Headline}"
                 SemanticProperties.HeadingLevel="Level1" />
 
-            <Label
+                <Label
                 Text="Welcome back &#10;.NET Maui App steering FEZ Cerbot"
                 Style="{StaticResource SubHeadline}"
                 SemanticProperties.HeadingLevel="Level2"
                 SemanticProperties.Description="Welcome to dot net Multi platform App U I" />
-            <HorizontalStackLayout Spacing="5">
-                <Button Text="{Binding Text_No_1}"  Command="{Binding Play_No_1Command}"/>
-                <Button Text="{Binding Text_No_2}"  Command="{Binding Play_No_2Command}"/>
-                <Button Text="{Binding Text_No_3}"  Command="{Binding Play_No_3Command}"/>
-                <Button Text="{Binding Text_No_4}"  Command="{Binding Play_No_4Command}"/>
-            </HorizontalStackLayout>
+                <HorizontalStackLayout Spacing="5">
+                    <Button Text="{Binding Text_No_1}"  Command="{Binding Play_No_1Command}"/>
+                    <Button Text="{Binding Text_No_2}"  Command="{Binding Play_No_2Command}"/>
+                    <Button Text="{Binding Text_No_3}"  Command="{Binding Play_No_3Command}"/>
+                    <Button Text="{Binding Text_No_4}"  Command="{Binding Play_No_4Command}"/>
+                </HorizontalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
 
-            <Grid ColumnDefinitions="200,*"
+        <Grid Grid.Row="1" 
+                ColumnDefinitions="200,*"
                 RowDefinitions="Auto"
                 ColumnSpacing="20"
                 Margin="0,10,0,0">
-                <!-- ⭐ LINKES LOG-FENSTER -->
-                <CollectionView
+
+            <CollectionView
                         Grid.Column="0"
                         ItemsSource="{Binding LogLines}"
                         BackgroundColor="#C8DCD0"
@@ -66,19 +68,19 @@
                         HeightRequest="120"
                         Margin="0,0,0,0">
 
-                    <CollectionView.ItemTemplate>
-                        <DataTemplate>
-                            <Label Text="{Binding}"
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Label Text="{Binding Message}"
                                     FontFamily="Consolas"
                                     FontSize="12"
                                     TextColor="Black"
                                     Padding="2,0"/>
-                        </DataTemplate>
-                    </CollectionView.ItemTemplate>
-                </CollectionView>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
 
-                <!-- ⭐ RECHTS: DEIN STEUER-GRID (unverändert, aber zentriert) -->
-                <Grid Grid.Column="1"
+            <!-- ⭐ RECHTS: DEIN STEUER-GRID (unverändert, aber zentriert) -->
+            <Grid Grid.Column="1"
           RowDefinitions="Auto,Auto,Auto"
           ColumnDefinitions="*,Auto,*, 200"
           ColumnSpacing="10"
@@ -86,39 +88,37 @@
           HorizontalOptions="Center"
           VerticalOptions="Center">
 
-                    <!-- Zeile 1: Vorwärts -->
-                    <Button Grid.Row="0" Grid.Column="1"
+                <!-- Zeile 1: Vorwärts -->
+                <Button Grid.Row="0" Grid.Column="1"
                 WidthRequest="100"
                 Text="Vorwärts"
                 Command="{Binding MoveForwardCommand}" />
 
-                    <!-- Zeile 2: Links / Stop / Rechts -->
-                    <Button Grid.Row="1" Grid.Column="0"
+                <!-- Zeile 2: Links / Stop / Rechts -->
+                <Button Grid.Row="1" Grid.Column="0"
                 Text="Links"
                 Command="{Binding TurnLeftCommand}" />
 
-                    <Button Grid.Row="1" Grid.Column="1"
+                <Button Grid.Row="1" Grid.Column="1"
                 Text="Stop"
                 Command="{Binding StopCommand}" />
 
-                    <Button Grid.Row="1" Grid.Column="2"
+                <Button Grid.Row="1" Grid.Column="2"
                 Text="Rechts"
                 Command="{Binding TurnRightCommand}" />
 
-                    <!-- Zeile 3: Rückwärts -->
-                    <Button Grid.Row="2" Grid.Column="1"
+                <!-- Zeile 3: Rückwärts -->
+                <Button Grid.Row="2" Grid.Column="1"
                 WidthRequest="100"
                 Text="Rückwärts"
                 Command="{Binding MoveBackwardCommand}" />
-                </Grid>
             </Grid>
-            
-            <Button
-                x:Name="CounterBtn"
-                Text="Zwick me" 
-                Command="{Binding ZwickMeCommand}"              
-                HorizontalOptions="Fill" />
-        </VerticalStackLayout>
-    </ScrollView>
+           
+
+
+                
+            </Grid>
+            <!--<Grid RowDefinitions="Auto,*"> -->
+</Grid>
 
 </ContentPage>
