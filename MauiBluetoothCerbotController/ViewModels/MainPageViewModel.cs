@@ -21,6 +21,7 @@ using System.Diagnostics;
 
 
 
+
 namespace MauiBluetoothCerbotController.ViewModels
 {
 
@@ -207,6 +208,14 @@ namespace MauiBluetoothCerbotController.ViewModels
             
         }
 
+        
+            public void Log(string message)
+            {
+            AddLog(message);
+
+               // LogLines.Add(new LogItem { Message = message });
+            }
+        
 
 
         private async void SendData(string val)
