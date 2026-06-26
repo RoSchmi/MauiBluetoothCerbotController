@@ -26,8 +26,10 @@ namespace MauiBluetoothCerbotController.ViewModels
 {
 
 
-    public partial class MainPageViewModel : ObservableObject
+    public partial class MainPageViewModel : ObservableObject //, IAppLogger
     {
+        private readonly IAppLogger _logger;
+
         [ObservableProperty]
         private ObservableCollection<LogEntry> logLines = new();
 
@@ -43,6 +45,8 @@ namespace MauiBluetoothCerbotController.ViewModels
 
         [ObservableProperty]
         private bool isConnected;
+
+        
 
 
 
@@ -61,28 +65,37 @@ namespace MauiBluetoothCerbotController.ViewModels
 
         #region Region Constructor 
 
-        public MainPageViewModel(IBluetoothBleService bluetooth)
+        public MainPageViewModel(IAppLogger logger, IBluetoothBleService bluetooth)
         {
             _bluetooth = bluetooth;
 
             Devices = new ObservableCollection<BleDeviceInfo>();
 
-            
-            // _bluetooth.ScanAsync();
-            // _deviceInfoCollection = _bluetooth.Devices;
 
-            // _bluetooth.ConnectAsync(_deviceInfoCollection[0].Id);
+            _logger = logger;
 
-
+            _logger.MessageLogged += OnLogMessage;
 
             int breakpoint23 = 1;
-        }
+         }
 
         #endregion
 
 
+
+
+        
+        private void OnLogMessage(string message)
+        {
+            // LogLines.Add(new LogItem { Message = message });
+            AddLog(new LogEntry { Message = message }.Message);
+
+        }
+
+
         public void AddLog(string line)
         {
+           
             if (LogLines.Count >= 100)
                 LogLines.RemoveAt(0); // älteste Zeile löschen
             LogLines.Add(new LogEntry() { Message = line });
@@ -200,6 +213,7 @@ namespace MauiBluetoothCerbotController.ViewModels
             if (IsConnected)
             {
                 AddLog("Successfully connected");
+                Log("Logging over service");
             }
             else
             {
@@ -208,14 +222,14 @@ namespace MauiBluetoothCerbotController.ViewModels
             
         }
 
-        
+            
             public void Log(string message)
             {
             AddLog(message);
 
                // LogLines.Add(new LogItem { Message = message });
             }
-        
+            
 
 
         private async void SendData(string val)

@@ -19,6 +19,8 @@ namespace RoSchmi.BluetoothController.Services
 {
     public class WindowsBluetoothBleService : IBluetoothBleService
     {
+       private IAppLogger _logger;
+
         public ObservableCollection<BleDeviceInfo> Devices { get; } = new();
 
         private BluetoothLEDevice? _device = null;
@@ -43,7 +45,12 @@ namespace RoSchmi.BluetoothController.Services
             DataReceived?.Invoke(this, data);
         }
 
-        public WindowsBluetoothBleService() { }
+
+       public WindowsBluetoothBleService(IAppLogger logger)   
+       {
+           _logger = logger;
+       }
+ 
 
         public async Task ScanAsync()
         {
@@ -93,39 +100,7 @@ namespace RoSchmi.BluetoothController.Services
             return BleConnectionStatus.Success;
         }
 
-        /*
-        public async Task<BleConnectionStatus> ConnectAsync(string deviceId)
-        {
-            try
-            {
-                BluetoothLEDevice device;
-
-                if (IsWindowsDeviceId(deviceId))
-                {
-                    // ⭐ Fall 1: Echte Windows-DeviceId
-                    device = await BluetoothLEDevice.FromIdAsync(deviceId);
-                }
-                else
-                {
-                    // ⭐ Fall 2: MAC-Adresse → in ulong umwandeln
-                    ulong address = ParseBluetoothAddress(deviceId);
-                    device = await BluetoothLEDevice.FromBluetoothAddressAsync(address);
-                }
-
-                if (device == null)
-                    return BleConnectionStatus.Unreachable;
-
-                var result = await device.GetGattServicesAsync();
-                return MapStatus(result.Status);
-            }
-            catch
-            {
-                return BleConnectionStatus.Failed;
-            }
-        }
-
-        */
-
+        
         private async Task<BluetoothLEDevice?> OpenDeviceAsync(string deviceId)
         {
             try
@@ -157,7 +132,7 @@ namespace RoSchmi.BluetoothController.Services
                 GattClientCharacteristicConfigurationDescriptorValue.Notify);
 
             Debug.WriteLine("Notify-Status: " + status);
-           // _logger.Log($"Notify-Status:  {status}...");
+            _logger.Log($"Notify-Status:  {status}...");
             return status == GattCommunicationStatus.Success;
         }
 
@@ -217,43 +192,12 @@ namespace RoSchmi.BluetoothController.Services
                 reader.ReadBytes(backData);
 
                 Debug.WriteLine("RX READ: " + Encoding.UTF8.GetString(backData));
-                //  _logger.Log($"RX READ: {Encoding.UTF8.GetString(backData)}");
+                _logger.Log($"RX READ: {Encoding.UTF8.GetString(backData)}");
 
             }
         }
 
-        /*
-
-        public async Task WriteAsync(string deviceId, byte[] data)    
-        {
-            var device = await BluetoothLEDevice.FromIdAsync(deviceId);
-            var servicesResult = await device.GetGattServicesAsync();
-            
-
-            var customService = servicesResult.Services.First(s => s.Uuid == Guid.Parse("2ac94b65-c8f4-48a4-804a-c03bc6960b80"));
-
-            var charsResult = await customService.GetCharacteristicsAsync();
-
-            var writeCharacteristic = charsResult.Characteristics.FirstOrDefault(ch =>
-            ch.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Write) ||
-            ch.CharacteristicProperties.HasFlag(GattCharacteristicProperties.WriteWithoutResponse)
-            );
-
-            var writer = new DataWriter();
-            writer.WriteBytes(data);
-
-            try
-            {
-                await writeCharacteristic.WriteValueAsync(writer.DetachBuffer());
-            }
-            catch (Exception ex)
-            {
-                string message = ex.Message;
-                int breakpoint93 = 1;
-            }
-        }
-
-        */
+        
 
         private ulong ParseBluetoothAddress(string deviceId)
         {

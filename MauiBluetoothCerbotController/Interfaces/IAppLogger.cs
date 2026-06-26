@@ -6,6 +6,7 @@ namespace RoSchmi.BluetoothController.Interfaces
 {
     public interface IAppLogger
     {
-        void Log(string message);
+        public event Action<string> MessageLogged;
+        public void Log(string message);
     }
 }

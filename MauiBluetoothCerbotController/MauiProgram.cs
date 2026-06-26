@@ -1,8 +1,12 @@
 ﻿using RoSchmi.BluetoothController.Interfaces;
 using RoSchmi.BluetoothController.Converters;
+using MauiBluetoothCerbotController.ViewModels;
+using MauiBluetoothCerbotController.Services;
+
+
 
 #if WINDOWS
-    using RoSchmi.BluetoothController.Services;
+using RoSchmi.BluetoothController.Services;
 #endif
 
 
@@ -26,6 +30,7 @@ namespace MauiBluetoothCerbotController
 #if DEBUG
     		builder.Logging.AddDebug();
 #endif
+            builder.Services.AddSingleton<IAppLogger, AppLogger>();
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddSingleton<ViewModels.MainPageViewModel>();
 #if WINDOWS
