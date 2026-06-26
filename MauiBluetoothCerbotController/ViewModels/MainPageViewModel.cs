@@ -17,6 +17,7 @@ using RoSchmi.BluetoothController.Interfaces;
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using RoSchmi.BluetoothController.Models;
+using System.Diagnostics;
 
 
 
@@ -89,13 +90,35 @@ namespace MauiBluetoothCerbotController.ViewModels
         }
 
         [RelayCommand]
-        private async Task Play_No_1() { SendData("T:1:1"); AddLog("Tune_No 1"); }
+        private async Task ZwickMe() 
+        { 
+            SendData("T:1:1"); AddLog("Clicked ZwickMe!");  
+        }
+        
+
+
+        [RelayCommand]
+        private async Task Play_No_1() { SendData("T:1:1"); AddLog("Played short tone"); }
+        public string Text_No_1 { get; } = "Play short tone" ;
 
         [RelayCommand]
         private async Task Play_No_2() { SendData("T:2:1"); }
+        public string Text_No_2 { get; } = "Play Tune No. 1";
+
+        [RelayCommand]
+        private async Task Play_No_3() { SendData("T:3:1"); }
+        public string Text_No_3 { get; } = "Play Tune No. 2";
+
 
         [RelayCommand]
         private async Task Play_No_4() { SendData("T:4:1"); }
+        public string Text_No_4 { get; } = "Play Tune No. 3";
+
+        /*
+        [RelayCommand]
+        private async Task Play_No_5() { SendData("T:5:1"); }
+        public string Text_No_5 { get; } = "Play Tune No. 4";
+        */
 
         [RelayCommand]
         private async Task MoveForward()
@@ -180,27 +203,16 @@ namespace MauiBluetoothCerbotController.ViewModels
 
         private async void SendData(string val)
         {
-            await _bluetooth.WriteAsync(Devices[0].Id, Encoding.UTF8.GetBytes(val + "\r\n"));
+            if (IsConnected)
+            {
+                await _bluetooth.WriteAsync(Devices[0].Id, Encoding.UTF8.GetBytes(val + "\r\n"));
+            }
+            else
+            {
+                Debug.WriteLine("Sent command but not connectet");
+                await Shell.Current.DisplayAlertAsync ("Connection Status", "Not connected to Ble-Device", "OK");
+            }
         }
 
     }
 }
-
-
-
-
-
-
-/*
-
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace MauiBluetoothCerbotController.ViewModels
-{
-    internal class MainPageViewModel
-    {
-    }
-}
-*/
