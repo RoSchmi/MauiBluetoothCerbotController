@@ -9,13 +9,15 @@ namespace RoSchmi.BluetoothController.Interfaces
         ObservableCollection<BleDeviceInfo> Devices { get; }
 
         Task ScanAsync();
-       // Task ConnectAsync(string deviceId);
-
-        //Task<GattCommunicationStatus> ConnectAsync(string deviceId);
+      
         Task<BleConnectionStatus> ConnectAsync(string deviceId);
-        
+
+        Task<bool> SubscribeToNotificationsAsync(string deviceId);
+
 
         Task WriteAsync(string deviceId, byte[] data);
+
+        Task<bool> WriteAndConfirmAsync(byte[] payload, byte incrementingSequenceNumber);
 
     }
 }

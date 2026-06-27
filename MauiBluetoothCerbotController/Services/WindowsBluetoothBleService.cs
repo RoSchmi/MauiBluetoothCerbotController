@@ -34,6 +34,14 @@ namespace RoSchmi.BluetoothController.Services
 
         
 
+        
+
+
+       public WindowsBluetoothBleService(IAppLogger logger)   
+       {
+           _logger = logger;
+       }
+
         private void RxCharacteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
         {
             //Debug.WriteLine("### NOTIFY EVENT ###");
@@ -46,12 +54,6 @@ namespace RoSchmi.BluetoothController.Services
         }
 
 
-       public WindowsBluetoothBleService(IAppLogger logger)   
-       {
-           _logger = logger;
-       }
- 
-
         public async Task ScanAsync()
         {
             Devices.Clear();
@@ -60,33 +62,44 @@ namespace RoSchmi.BluetoothController.Services
             // Funtioniert erst, nachdem das Gerät über das Bluetooth Icon in der Systemtray als Bluetooth Gerät hinzugefügt wurde.
             var selector = BluetoothLEDevice.GetDeviceSelector();
             var result = await DeviceInformation.FindAllAsync(selector);
-        
+
             foreach (var device in result)
-                Devices.Add(new BleDeviceInfo
-                { Id = device.Id,
-                    Name = device.Name 
-                });
+            {
+                Devices.Add(new BleDeviceInfo { Id = device.Id, Name = device.Name });    
+            }
         }
 
         public async Task<BleConnectionStatus> ConnectAsync(string deviceId)
         {
             _device = await OpenDeviceAsync(deviceId);
             if (_device == null)
+            {
+                _logger.Log($"Device unreachable");
                 return BleConnectionStatus.Unreachable;
+            }
 
             var servicesResult = await _device.GetGattServicesAsync();
             if (servicesResult.Status != GattCommunicationStatus.Success)
+            {
+                _logger.Log($"No GATT Services");
                 return BleConnectionStatus.Failed;
+            }
 
             _customService = servicesResult.Services
                 .FirstOrDefault(s => s.Uuid == Guid.Parse("2ac94b65-c8f4-48a4-804a-c03bc6960b80"));
 
             if (_customService == null)
+            {
+                _logger.Log($"Failed, no customservice");
                 return BleConnectionStatus.ServiceNotFound;
+            }
 
             var charsResult = await _customService.GetCharacteristicsAsync();
             if (charsResult.Status != GattCommunicationStatus.Success)
+            {
+                _logger.Log($"Failed to Connect");
                 return BleConnectionStatus.Failed;
+            }
 
             _txCharacteristic = charsResult.Characteristics
                 .FirstOrDefault(c => c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Write));
@@ -95,8 +108,12 @@ namespace RoSchmi.BluetoothController.Services
                 .FirstOrDefault(c => c.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify));
 
             if (_txCharacteristic == null || _rxCharacteristic == null)
+            {
+                _logger.Log($"Missing charcteristics");
                 return BleConnectionStatus.Failed;
+            }
 
+            _logger.Log($"Connected to device");
             return BleConnectionStatus.Success;
         }
 
@@ -152,10 +169,13 @@ namespace RoSchmi.BluetoothController.Services
             return false;
         }
 
-        public async Task<bool> WriteAndConfirmAsync(byte[] payload, byte messageCounter)
+        public async Task<bool> WriteAndConfirmAsync(byte[] payload, byte incrementingSequenceNumber)
         {
-            var message = payload
-                .Concat(new byte[] { messageCounter, 0x0D, 0x0A })
+            byte separator = 0x5F; // '_'
+
+            byte[] message = new byte[] { incrementingSequenceNumber, separator }
+                .Concat(payload)
+                .Concat(new byte[] { 0x0D, 0x0A })
                 .ToArray();
 
             await _txCharacteristic.WriteValueAsync(message.AsBuffer());
@@ -169,7 +189,7 @@ namespace RoSchmi.BluetoothController.Services
             var reader = DataReader.FromBuffer(result.Value);
             byte[] readBack = new byte[result.Value.Length];
             reader.ReadBytes(readBack);
-
+            _logger.Log($"SRX READ: {Encoding.UTF8.GetString(readBack)}");
             return message.SequenceEqual(readBack);
         }
 

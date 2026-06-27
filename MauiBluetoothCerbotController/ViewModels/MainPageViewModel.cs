@@ -1,8 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-#if WINDOWS
-//using MauiBluetoothCerbotController.Services;
-using Windows.Devices.Bluetooth.GenericAttributeProfile;
-#endif
+
 
 //using Windows.Devices.Bluetooth;
 //using Windows.Devices.Bluetooth.Rfcomm;
@@ -18,9 +15,6 @@ using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using RoSchmi.BluetoothController.Models;
 using System.Diagnostics;
-
-
-
 
 namespace MauiBluetoothCerbotController.ViewModels
 {
@@ -46,18 +40,11 @@ namespace MauiBluetoothCerbotController.ViewModels
         [ObservableProperty]
         private bool isConnected;
 
-        
+        [ObservableProperty]
+        private bool sendConfirmed;
 
+        private byte _incrementingSequenceNumber = 0;
 
-
-#if WINDOWS
-
-
-        private GattDeviceService bleGattDeviceService;
-        private IReadOnlyList<GattDeviceService> gdsServices;
-        private IReadOnlyList<GattCharacteristic> gdsCharacteristics;
-        private IReadOnlyList<GattCharacteristic> readCharacteristic;
-#endif
         private bool connected;
         private int speedLeft = 0;
         private int speedRight = 0;
@@ -81,15 +68,10 @@ namespace MauiBluetoothCerbotController.ViewModels
 
         #endregion
 
-
-
-
         
         private void OnLogMessage(string message)
-        {
-            // LogLines.Add(new LogItem { Message = message });
+        {  
             AddLog(new LogEntry { Message = message }.Message);
-
         }
 
 
@@ -108,8 +90,6 @@ namespace MauiBluetoothCerbotController.ViewModels
             SendData("T:1:1"); AddLog("Clicked ZwickMe!");  
         }
         
-
-
         [RelayCommand]
         private async Task Play_No_1() { SendData("T:1:1"); AddLog("Played short tone"); }
         public string Text_No_1 { get; } = "Play short tone" ;
@@ -122,16 +102,9 @@ namespace MauiBluetoothCerbotController.ViewModels
         private async Task Play_No_3() { SendData("T:3:1"); AddLog("Played Tune No. 2"); }
         public string Text_No_3 { get; } = "Play Tune No. 2";
 
-
         [RelayCommand]
         private async Task Play_No_4() { SendData("T:4:1"); AddLog("Played Tune No. 3"); }
         public string Text_No_4 { get; } = "Play Tune No. 3";
-
-        /*
-        [RelayCommand]
-        private async Task Play_No_5() { SendData("T:5:1"); }
-        public string Text_No_5 { get; } = "Play Tune No. 4";
-        */
 
         [RelayCommand]
         private async Task MoveForward()
@@ -196,15 +169,7 @@ namespace MauiBluetoothCerbotController.ViewModels
                 ConnectCommand.Execute(value);
         }
 
-        /*
-        [RelayCommand]
-        public async Task ConnectAsync(BleDeviceInfo device)
-        {
-            var status = await _bluetooth.ConnectAsync(device.Id);
-            IsConnected = status == GattCommunicationStatus.Success;
-        }
-        */
-
+        
         [RelayCommand]
         public async Task ConnectAsync(BleDeviceInfo device)
         {
@@ -212,26 +177,15 @@ namespace MauiBluetoothCerbotController.ViewModels
             IsConnected = status == BleConnectionStatus.Success;
             if (IsConnected)
             {
-                AddLog("Successfully connected");
-                Log("Logging over service");
+                // AddLog("Successfully connected");             
             }
             else
             {
-                AddLog("Failed to connected");
+                // AddLog("Failed to connected");
             }
             
         }
-
-            
-            public void Log(string message)
-            {
-            AddLog(message);
-
-               // LogLines.Add(new LogItem { Message = message });
-            }
-            
-
-
+ 
         private async void SendData(string val)
         {
             if (IsConnected)
@@ -244,6 +198,5 @@ namespace MauiBluetoothCerbotController.ViewModels
                 await Shell.Current.DisplayAlertAsync ("Connection Status", "Not connected to Ble-Device", "OK");
             }
         }
-
     }
 }

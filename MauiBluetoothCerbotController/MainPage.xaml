@@ -4,121 +4,163 @@
              x:Class="MauiBluetoothCerbotController.MainPage"
              xmlns:pagemodel="clr-namespace:MauiBluetoothCerbotController"
              xmlns:viewmodels="clr-namespace:MauiBluetoothCerbotController.ViewModels"
+             xmlns:converters="clr-namespace:MauiBluetoothCerbotController.Converters"
              x:DataType="viewmodels:MainPageViewModel">
 
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <Grid RowDefinitions="Auto,*">
-        <ScrollView Grid.Row="0">
-            <VerticalStackLayout
-            Padding="30,0"
-            Spacing="25">
-                <HorizontalStackLayout Margin="0,20,0,0"  Spacing="10" VerticalOptions="Start">
-                    <Label Text="Connect to BLE-Device"
-           VerticalOptions="Center" FontAttributes="Bold"/>
 
-                    <Picker  BackgroundColor="BlanchedAlmond"
-                         MinimumWidthRequest="200"
-            ItemsSource="{Binding Devices}"
-            ItemDisplayBinding="{Binding Name}"
-            SelectedItem="{Binding SelectedDevice}" />
+        <!-- ⭐ OBERER BEREICH MIT SCROLLVIEW -->
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Padding="30,0" Spacing="25">
+
+                <!-- Verbindungsauswahl -->
+                <HorizontalStackLayout Margin="0,20,0,0" Spacing="10" VerticalOptions="Start">
+                    <Label Text="Connect to BLE-Device"
+                           VerticalOptions="Center"
+                           FontAttributes="Bold"/>
+
+                    <Picker BackgroundColor="BlanchedAlmond"
+                            MinimumWidthRequest="200"
+                            ItemsSource="{Binding Devices}"
+                            ItemDisplayBinding="{Binding Name}"
+                            SelectedItem="{Binding SelectedDevice}" />
 
                     <BoxView WidthRequest="20"
-             HeightRequest="20"
-             CornerRadius="4"
-             VerticalOptions="Center"
-             Color="{Binding IsConnected, Converter={StaticResource BoolToColorConverter}}" />
+                             HeightRequest="20"
+                             CornerRadius="4"
+                             VerticalOptions="Center"
+                             Color="{Binding IsConnected, Converter={StaticResource BoolToColorConverter}}" />
                 </HorizontalStackLayout>
 
-                <Image
-                Source="ghi_cerbot_2.png"
-                HeightRequest="185"
-                Aspect="AspectFit"
-                SemanticProperties.Description="GHI Electronics Cerbot" />
+                <!-- ⭐ Radiobuttons links + Bild rechts -->
+                <Grid ColumnDefinitions="180,*, 170" Margin="10,0,0,0">
 
-                <Label
-                Text="Hello, GHI FEZ Cerbot"
-                Style="{StaticResource Headline}"
-                SemanticProperties.HeadingLevel="Level1" />
+                    <!-- Radiobutton-Gruppe im Rahmen -->
+                    <VerticalStackLayout>
+                    <Frame Grid.Column="0"
+                           BorderColor="DarkGray"
+                           BackgroundColor="#F5F5F5"
+                           CornerRadius="6"
+                           Padding="10"
+                           Margin="0,0,10,0">
 
-                <Label
-                Text="Welcome back &#10;.NET Maui App steering FEZ Cerbot"
-                Style="{StaticResource SubHeadline}"
-                SemanticProperties.HeadingLevel="Level2"
-                SemanticProperties.Description="Welcome to dot net Multi platform App U I" />
+
+                        <VerticalStackLayout>
+                            <RadioButton
+                                    Content="Normal senden"
+                                    GroupName="SendMode"
+                                    IsChecked="{Binding SendConfirmed, Converter={StaticResource InverseBoolConverter}}" />
+
+                                <RadioButton
+                                    Content="Confirmed senden"
+                                    GroupName="SendMode"
+                                    IsChecked="{Binding SendConfirmed}" 
+                                    ToolTipProperties.Text="Uses an incrementing sequence number (e.g., “01_”, “02_”) as a prefix to the payload to enable transmission confirmation."/>
+
+
+
+                            </VerticalStackLayout>
+                        
+                    </Frame>
+                        <Label Text="Confirmed means: A sequence number is used as a prefix to the payload"
+                           VerticalOptions="Start" />
+                    </VerticalStackLayout>
+
+
+                    <!-- Bild rechts -->
+                    <Image Grid.Column="1"
+                           Source="ghi_cerbot_2.png"
+                           HeightRequest="185"
+                           Aspect="AspectFit"
+                           SemanticProperties.Description="GHI Electronics Cerbot" />
+                </Grid>
+
+                <!-- Überschriften -->
+                <Label Text="Hello, GHI FEZ Cerbot"
+                       Style="{StaticResource Headline}"
+                       SemanticProperties.HeadingLevel="Level1" />
+
+                <Label Text="Welcome back &#10;.NET Maui App steering FEZ Cerbot"
+                       Style="{StaticResource SubHeadline}"
+                       SemanticProperties.HeadingLevel="Level2"
+                       SemanticProperties.Description="Welcome to dot net Multi platform App U I" />
+
+                <!-- Buttons -->
                 <HorizontalStackLayout Spacing="5">
-                    <Button Text="{Binding Text_No_1}"  Command="{Binding Play_No_1Command}"/>
-                    <Button Text="{Binding Text_No_2}"  Command="{Binding Play_No_2Command}"/>
-                    <Button Text="{Binding Text_No_3}"  Command="{Binding Play_No_3Command}"/>
-                    <Button Text="{Binding Text_No_4}"  Command="{Binding Play_No_4Command}"/>
+                    <Button Text="{Binding Text_No_1}" Command="{Binding Play_No_1Command}"/>
+                    <Button Text="{Binding Text_No_2}" Command="{Binding Play_No_2Command}"/>
+                    <Button Text="{Binding Text_No_3}" Command="{Binding Play_No_3Command}"/>
+                    <Button Text="{Binding Text_No_4}" Command="{Binding Play_No_4Command}"/>
                 </HorizontalStackLayout>
+
             </VerticalStackLayout>
         </ScrollView>
 
-        <Grid Grid.Row="1" 
-                ColumnDefinitions="200,*"
-                RowDefinitions="Auto"
-                ColumnSpacing="20"
-                Margin="0,10,0,0">
+        <!-- ⭐ UNTERER BEREICH MIT LOG UND STEUERUNG -->
+        <Grid Grid.Row="1"
+              ColumnDefinitions="250,*"
+              RowDefinitions="Auto"
+              ColumnSpacing="20"
+              Margin="0,10,0,0">
 
-            <CollectionView
-                        Grid.Column="0"
-                        ItemsSource="{Binding LogLines}"
-                        BackgroundColor="#C8DCD0"
-                        VerticalScrollBarVisibility="Always"
-                        HeightRequest="120"
-                        Margin="0,0,0,0">
+            <!-- Log -->
+            <CollectionView Grid.Column="0"
+                            ItemsSource="{Binding LogLines}"
+                            BackgroundColor="#C8DCD0"
+                            VerticalScrollBarVisibility="Always"
+                            HeightRequest="120"
+                            Margin="10,0,0,0">
 
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Label Text="{Binding Message}"
-                                    FontFamily="Consolas"
-                                    FontSize="12"
-                                    TextColor="Black"
-                                    Padding="2,0"/>
+                               FontFamily="Consolas"
+                               FontSize="12"
+                               TextColor="Black"
+                               Padding="2,0"/>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
 
-            <!-- ⭐ RECHTS: DEIN STEUER-GRID (unverändert, aber zentriert) -->
+            <!-- Steuer-Grid -->
             <Grid Grid.Column="1"
-          RowDefinitions="Auto,Auto,Auto"
-          ColumnDefinitions="*,Auto,*, 200"
-          ColumnSpacing="10"
-          RowSpacing="10"
-          HorizontalOptions="Center"
-          VerticalOptions="Center">
+                  RowDefinitions="Auto,Auto,Auto"
+                  ColumnDefinitions="*,Auto,*,200"
+                  ColumnSpacing="10"
+                  RowSpacing="10"
+                  HorizontalOptions="Center"
+                  VerticalOptions="Center">
 
-                <!-- Zeile 1: Vorwärts -->
                 <Button Grid.Row="0" Grid.Column="1"
-                WidthRequest="100"
-                Text="Vorwärts"
-                Command="{Binding MoveForwardCommand}" />
+                        WidthRequest="100"
+                        Text="Vorwärts"
+                        Command="{Binding MoveForwardCommand}" />
 
-                <!-- Zeile 2: Links / Stop / Rechts -->
                 <Button Grid.Row="1" Grid.Column="0"
-                Text="Links"
-                Command="{Binding TurnLeftCommand}" />
+                        Text="Links"
+                        Command="{Binding TurnLeftCommand}" />
 
                 <Button Grid.Row="1" Grid.Column="1"
-                Text="Stop"
-                Command="{Binding StopCommand}" />
+                        Text="Stop"
+                        Command="{Binding StopCommand}" />
 
                 <Button Grid.Row="1" Grid.Column="2"
-                Text="Rechts"
-                Command="{Binding TurnRightCommand}" />
+                        Text="Rechts"
+                        Command="{Binding TurnRightCommand}" />
 
-                <!-- Zeile 3: Rückwärts -->
                 <Button Grid.Row="2" Grid.Column="1"
-                WidthRequest="100"
-                Text="Rückwärts"
-                Command="{Binding MoveBackwardCommand}" />
+                        WidthRequest="100"
+                        Text="Rückwärts"
+                        Command="{Binding MoveBackwardCommand}" />
             </Grid>
-           
 
+        </Grid>
 
-                
-            </Grid>
-            <!--<Grid RowDefinitions="Auto,*"> -->
-</Grid>
-
+    </Grid>
 </ContentPage>

@@ -1,6 +1,6 @@
 ﻿using RoSchmi.BluetoothController.Interfaces;
-using RoSchmi.BluetoothController.Converters;
 using MauiBluetoothCerbotController.ViewModels;
+using MauiBluetoothCerbotController.Converters;
 using MauiBluetoothCerbotController.Services;
 
 
@@ -33,9 +33,12 @@ namespace MauiBluetoothCerbotController
             builder.Services.AddSingleton<IAppLogger, AppLogger>();
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddSingleton<ViewModels.MainPageViewModel>();
+            builder.Services.AddSingleton<BoolToColorConverter>();
+            builder.Services.AddSingleton<InverseBoolConverter>();
+
 #if WINDOWS
             builder.Services.AddSingleton<IBluetoothBleService, WindowsBluetoothBleService>();
-            builder.Services.AddSingleton<BoolToColorConverter>();
+            
 
 #endif
 
