@@ -169,7 +169,7 @@ namespace RoSchmi.BluetoothController.Services
             return false;
         }
 
-        public async Task<bool> WriteAndConfirmAsync(byte[] payload, byte incrementingSequenceNumber)
+        public async Task<bool> WriteAndConfirmAsync(string deviceId, byte[] payload, byte incrementingSequenceNumber)
         {
             byte separator = 0x5F; // '_'
 
@@ -189,7 +189,10 @@ namespace RoSchmi.BluetoothController.Services
             var reader = DataReader.FromBuffer(result.Value);
             byte[] readBack = new byte[result.Value.Length];
             reader.ReadBytes(readBack);
-            _logger.Log($"SRX READ: {Encoding.UTF8.GetString(readBack)}");
+            byte seq = readBack[0];
+            string seqHex = seq.ToString("X2");
+            string text = Encoding.UTF8.GetString(readBack, 1, readBack.Length - 1);
+            _logger.Log($"SRX: {seqHex}{text}");      
             return message.SequenceEqual(readBack);
         }
 

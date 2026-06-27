@@ -189,8 +189,24 @@ namespace MauiBluetoothCerbotController.ViewModels
         private async void SendData(string val)
         {
             if (IsConnected)
-            {
-                await _bluetooth.WriteAsync(Devices[0].Id, Encoding.UTF8.GetBytes(val + "\r\n"));
+            {   
+                if (SendConfirmed)
+                {
+                    bool confirmation = await _bluetooth.WriteAndConfirmAsync(Devices[0].Id, Encoding.UTF8.GetBytes(val + "\r\n"), _incrementingSequenceNumber++);
+                    if (confirmation)
+                    {
+                        AddLog("Successful confirmed transfer");
+                    }
+                    else
+                    {
+                        AddLog("Failed confirmed transfer!!!!");
+                    }
+                }
+                else
+                {
+                    await _bluetooth.WriteAsync(Devices[0].Id, Encoding.UTF8.GetBytes(val + "\r\n"));
+                }
+                
             }
             else
             {

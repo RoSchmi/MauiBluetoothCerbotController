@@ -17,7 +17,7 @@ namespace RoSchmi.BluetoothController.Interfaces
 
         Task WriteAsync(string deviceId, byte[] data);
 
-        Task<bool> WriteAndConfirmAsync(byte[] payload, byte incrementingSequenceNumber);
+        Task<bool> WriteAndConfirmAsync(string deviceId, byte[] payload, byte incrementingSequenceNumber);
 
     }
 }
